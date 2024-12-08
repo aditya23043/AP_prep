@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc,fixuphtml" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Module Import Declarations (Preview)</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../resources/jdk-default.css" />
+  <link rel="stylesheet" href="../resources/spec-changes.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+<header id="title-block-header">
+<div class="navbar"><div><strong>Java SE 23 & JDK 23</strong></div><nav><ul><li><a href="../api/index.html">API</a>
+<li><a href="index.html">OTHER SPECIFICATIONS</a>
+<li><a href="man/index.html">TOOL GUIDES</a></ul></nav></div>
+
+<h1 class="title">Module Import Declarations (Preview)</h1>
+<p class="subtitle">Changes to the Java® Language Specification •
+Version 23.0.1+11-39</p>
+</header>
+<nav id="TOC" role="doc-toc" title="Table Of Contents">
+<ul>
+<li><a href="#jls-3" id="toc-jls-3">Chapter 3: Lexical Structure</a>
+<ul>
+<li><a href="#jls-3.9" id="toc-jls-3.9">3.9 Keywords</a></li>
+</ul></li>
+<li><a href="#jls-6" id="toc-jls-6">Chapter 6: Names</a>
+<ul>
+<li><a href="#jls-6.1" id="toc-jls-6.1">6.1 Declarations</a></li>
+<li><a href="#jls-6.3" id="toc-jls-6.3">6.3 Scope of a
+Declaration</a></li>
+<li><a href="#jls-6.4" id="toc-jls-6.4">6.4 Shadowing and Obscuring</a>
+<ul>
+<li><a href="#jls-6.4.1" id="toc-jls-6.4.1">6.4.1 Shadowing</a></li>
+</ul></li>
+<li><a href="#jls-6.5" id="toc-jls-6.5">6.5 Determining the Meaning of a
+Name</a>
+<ul>
+<li><a href="#jls-6.5.1" id="toc-jls-6.5.1">6.5.1 Syntactic
+Classification of a Name According to Context</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#jls-7" id="toc-jls-7">Chapter 7: Packages and Modules</a>
+<ul>
+<li><a href="#jls-7.5" id="toc-jls-7.5">7.5 Import Declarations</a>
+<ul>
+<li><a href="#jls-7.5.5" id="toc-jls-7.5.5"><strong>7.5.5
+Single-Module-Import Declarations</strong></a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<main><p>This document describes changes to the <a
+href="https://docs.oracle.com/javase/specs/jls/se22/html">Java Language Specification</a>
+to support <em>Module Import Declarations</em>, which is a preview
+feature of Java SE 23. See <a
+href="https://openjdk.org/jeps/476">JEP 476</a> for an overview of the
+feature.</p>
+<p>The preview feature <em>Implicitly declared classes and instance
+<code>main</code> methods</em> proposed by <a
+href="https://openjdk.org/jeps/477">JEP 477</a> depends on this
+feature.</p>
+<p>Changes are described with respect to existing sections of the JLS.
+New text is indicated <strong>like this</strong> and deleted text is
+indicated <del>like this</del>. Explanation and discussion, as needed,
+is set aside in grey boxes.</p>
+<div class="editorial">
+<p>Changelog:</p>
+<p>2024-06-04: Adding missing update to section 3.9</p>
+<p>2024-05-07: Updated with JEP 477 link.</p>
+<p>2024-04: First draft.</p>
+</div>
+<h2 id="jls-3">Chapter 3: Lexical Structure</h2>
+<h3 id="jls-3.9">3.9 Keywords</h3>
+<p>51 character sequences, formed from ASCII characters, are reserved
+for use as keywords and cannot be used as identifiers (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-3.html#jls-3.8">3.8</a>).
+Another 17 character sequences, also formed from ASCII characters, may
+be interpreted as keywords or as other tokens, depending on the context
+in which they appear.</p>
+<dl>
+<dt><em>Keyword:</em></dt>
+<dd>
+<em>ReservedKeyword</em>
+</dd>
+<dd>
+<em>ContextualKeyword</em>
+</dd>
+<dt><em>ReservedKeyword:</em></dt>
+<dd>
+(one of) #<br />
+<code>abstract continue for new switch</code><br />
+<code>assert default if package synchronized</code><br />
+<code>boolean do goto private this</code><br />
+<code>break double implements protected throw</code><br />
+<code>byte else import public throws</code><br />
+<code>case enum instanceof return transient</code><br />
+<code>catch extends int short try</code><br />
+<code>char final interface static void</code><br />
+<code>class finally long strictfp volatile</code><br />
+<code>const float native super while</code><br />
+<code>_</code> (underscore)
+</dd>
+<dt><em>ContextualKeyword:</em></dt>
+<dd>
+(one of) #<br />
+<code>exports opens requires uses yield</code><br />
+<code>module permits sealed var</code><br />
+<code>non-sealed provides to when</code><br />
+<code>open record transitive with</code><br />
+
+</dd>
+</dl>
+<blockquote>
+<p>The keywords <code>const</code> and <code>goto</code> are reserved,
+even though they are not currently used. This may allow a Java compiler
+to produce better error messages if these C++ keywords incorrectly
+appear in programs.</p>
+</blockquote>
+<blockquote>
+<p>The keyword <code>strictfp</code> is obsolete and should not be used
+in new code.</p>
+</blockquote>
+<blockquote>
+<p>The keyword <code>_</code> (underscore) may be used in certain
+declarations in place of an identifier (<a href="#jls-6.1">6.1</a>).</p>
+</blockquote>
+<blockquote>
+<p><code>true</code> and <code>false</code> are not keywords, but rather
+boolean literals (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-3.html#jls-3.10.3">3.10.3</a>).</p>
+</blockquote>
+<blockquote>
+<p><code>null</code> is not a keyword, but rather the null literal (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-3.html#jls-3.10.8">3.10.8</a>).</p>
+</blockquote>
+<p>During the reduction of input characters to input elements (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-3.html#jls-3.5">3.5</a>),
+a sequence of input characters that notionally matches a contextual
+keyword is reduced to a contextual keyword if and only if both of the
+following conditions hold:</p>
+<ol type="1">
+<li><p>The sequence is recognized as a terminal specified in a suitable
+context of the syntactic grammar (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-2.html#jls-2.3">2.3</a>),
+as follows:</p>
+<div class="deleted">
+<ul>
+<li>For <code>module</code> and <code>open</code>, when recognized as a
+terminal in a <em>ModuleDeclaration</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7">7.7</a>).</li>
+</ul>
+</div>
+<div class="inserted">
+<ul>
+<li><p>For <code>module</code>, when recognized as a terminal in a
+<em>SingleModuleImportDeclaration</em> (<a href="#jls-7.5.5">7.5.5</a>)
+or a <em>ModuleDeclaration</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7">7.7</a>).</p></li>
+<li><p>For <code>open</code>, when recognized as a terminal in a
+<em>ModuleDeclaration</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7">7.7</a>).</p></li>
+</ul>
+</div>
+<ul>
+<li><p>For <code>exports</code>, <code>opens</code>,
+<code>provides</code>, <code>requires</code>, <code>to</code>,
+<code>uses</code>, and <code>with</code>, when recognized as a terminal
+in a <em>ModuleDirective</em>.</p></li>
+<li><p>For <code>transitive</code>, when recognized as a terminal in a
+<em>RequiresModifier</em>.</p>
+<blockquote>
+<p>For example, recognizing the sequence <code>requires</code>
+<code>transitive</code> <code>;</code> does not make use of
+<em>RequiresModifier</em>, so the term <code>transitive</code> is
+reduced here to an identifier and not a contextual keyword.</p>
+</blockquote></li>
+<li><p>For <code>var</code>, when recognized as a terminal in a
+<em>LocalVariableType</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.4">14.4</a>)
+or a <em>LambdaParameterType</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.27.1">15.27.1</a>).</p>
+<blockquote>
+<p>In other contexts, attempting to use <code>var</code> as an
+identifier will cause an error, because <code>var</code> is not a
+<em>TypeIdentifier</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-3.html#jls-3.8">3.8</a>).</p>
+</blockquote></li>
+<li><p>For <code>yield</code>, when recognized as a terminal in a
+<em>YieldStatement</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.21">14.21</a>).</p>
+<blockquote>
+<p>In other contexts, attempting to use the <code>yield</code> as an
+identifier will cause an error, because <code>yield</code> is neither a
+<em>TypeIdentifier</em> nor a <em>UnqualifiedMethodIdentifier</em>.</p>
+</blockquote></li>
+<li><p>For <code>record</code>, when recognized as a terminal in a
+<em>RecordDeclaration</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.10">8.10</a>).</p></li>
+<li><p>For <code>non-sealed</code>, <code>permits</code>, and
+<code>sealed</code>, when recognized as a terminal in a
+<em>NormalClassDeclaration</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1">8.1</a>)
+or a <em>NormalInterfaceDeclaration</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-9.1">9.1</a>).</p></li>
+<li><p>For <code>when</code>, when recognized as a terminal in a
+<em>Guard</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.11.1">14.11.1</a>).</p></li>
+</ul></li>
+<li><p>The sequence is not immediately preceded or immediately followed
+by an input character that matches <em>JavaLetterOrDigit</em>.</p></li>
+</ol>
+<blockquote>
+<p>In general, accidentally omitting white space in source code will
+cause a sequence of input characters to be tokenized as an identifier,
+due to the "longest possible translation" rule (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-3.html#jls-3.2">3.2</a>).
+For example, the sequence of twelve input characters
+<code>p u b l i c s t a t i c</code> is always tokenized as the
+identifier <code>publicstatic</code>, rather than as the reserved
+keywords <code>public</code> and <code>static</code>. If two tokens are
+intended, they must be separated by white space or a comment.</p>
+</blockquote>
+<blockquote>
+<p>The rule above works in tandem with the "longest possible
+translation" rule to produce an intuitive result in contexts where
+contextual keywords may appear. For example, the sequence of eleven
+input characters <code>v a r f i l e n a m e</code> is usually tokenized
+as the identifier <code>varfilename</code>, but in a local variable
+declaration, the first three input characters are tentatively recognized
+as the contextual keyword <code>var</code> by the first condition of the
+rule above. However, it would be confusing to overlook the lack of white
+space in the sequence by recognizing the next eight input characters as
+the identifier <code>filename</code>. (This would mean that the sequence
+undergoes different tokenization in different contexts: an identifier in
+most contexts, but a contextual keyword and an identifier in local
+variable declarations.) Accordingly, the second condition prevents
+recognition of the contextual keyword <code>var</code> on the grounds
+that the immediately following input character <code>f</code> is a
+<em>JavaLetterOrDigit</em>. The sequence
+<code>v a r f i l e n a m e</code> is therefore tokenized as the
+identifier <code>varfilename</code> in a local variable declaration.</p>
+</blockquote>
+<blockquote>
+<p>As another example of the careful recognition of contextual keywords,
+consider the sequence of 15 input characters
+<code>n o n - s e a l e d c l a s s</code>. This sequence is usually
+translated to three tokens - the identifier <code>non</code>, the
+operator <code>-</code>, and the identifier <code>sealedclass</code> -
+but in a normal class declaration, where the first condition holds, the
+first ten input characters are tentatively recognized as the contextual
+keyword <code>non-sealed</code>. To avoid translating the sequence to
+two keyword tokens (<code>non-sealed</code> and <code>class</code>)
+rather than three non-keyword tokens, and to avoid rewarding the
+programmer for omitting white space before <code>class</code>, the
+second condition prevents recognition of the contextual keyword. The
+sequence <code>n o n - s e a l e d c l a s s</code> is therefore
+tokenized as three tokens in a class declaration.</p>
+</blockquote>
+<blockquote>
+<p>In the rule above, the first condition depends on details of the
+syntactic grammar, but a compiler for the Java programming language can
+implement the rule without fully parsing the input program. For example,
+a heuristic could be used to track the contextual state of the
+tokenizer, as long as the heuristic guarantees that valid uses of
+contextual keywords are tokenized as keywords, and valid uses of
+identifiers are tokenized as identifiers. Alternatively, a compiler
+could always tokenize a contextual keyword as an identifier, leaving it
+to a later phase to recognize special uses of these identifiers.</p>
+</blockquote>
+<h2 id="jls-6">Chapter 6: Names</h2>
+<h3 id="jls-6.1">6.1 Declarations</h3>
+<p>A <em>declaration</em> introduces one of the following entities into
+a program:</p>
+<ul>
+<li><p>A module, declared in a <code>module</code> declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7">7.7</a>)</p></li>
+<li><p>A package, declared in a <code>package</code> declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.4">7.4</a>)</p></li>
+<li><p>An imported class or interface, declared in a single-type-import
+declaration<strong>, </strong> <del>or</del> a type-import-on-demand
+declaration<strong>, or a single-module-import declaration</strong> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.1">7.5.1</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.2">7.5.2</a><strong>,
+<a href="#jls-7.5.5">7.5.5</a></strong>)</p></li>
+<li><p>An imported <code>static</code> member, declared in a
+single-static-import declaration or a static-import-on-demand
+declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.3">7.5.3</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.4">7.5.4</a>)</p></li>
+<li><p>A class, declared by a normal class declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1">8.1</a>),
+an enum declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.9">8.9</a>),
+or a record declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.10">8.10</a>)</p></li>
+<li><p>An interface, declared by a normal interface declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-9.1">9.1</a>)
+or an annotation interface declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.6">9.6</a>).</p></li>
+<li><p>A type parameter, declared as part of the declaration of a
+generic class, interface, method, or constructor (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1.2">8.1.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.1.2">9.1.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.4">8.4.4</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.4">8.8.4</a>)</p></li>
+<li><p>A member of a reference type (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.2">8.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.2">9.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.9.3">8.9.3</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.6">9.6</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-10.html#jls-10.7">10.7</a>),
+one of the following:</p>
+<ul>
+<li><p>A member class (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.5">8.5</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.5">9.5</a>)</p></li>
+<li><p>A member interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.5">8.5</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.5">9.5</a>)</p></li>
+<li><p>A field, one of the following:</p>
+<ul>
+<li><p>A field declared in a class (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.3">8.3</a>)</p></li>
+<li><p>A field declared in an interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.3">9.3</a>)</p></li>
+<li><p>An implicitly declared field of a class corresponding to an enum
+constant or a record component</p></li>
+<li><p>The field <code>length</code>, which is implicitly a member of
+every array type (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-10.html#jls-10.7">10.7</a>)</p></li>
+</ul></li>
+<li><p>A method, one of the following:</p>
+<ul>
+<li><p>A method (<code>abstract</code> or otherwise) declared in a class
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4">8.4</a>)</p></li>
+<li><p>A method (<code>abstract</code> or otherwise) declared in an
+interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.4">9.4</a>)</p></li>
+<li><p>An implicitly declared accessor method corresponding to a record
+component</p></li>
+</ul></li>
+</ul></li>
+<li><p>An enum constant (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.9.1">8.9.1</a>)</p></li>
+<li><p>A record component (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.10.3">8.10.3</a>)</p></li>
+<li><p>A formal parameter, one of the following:</p>
+<ul>
+<li><p>A formal parameter of a method of a class or interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.1">8.4.1</a>)</p></li>
+<li><p>A formal parameter of a constructor of a class (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.1">8.8.1</a>)</p></li>
+<li><p>A formal parameter of a lambda expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.27.1">15.27.1</a>)</p></li>
+</ul></li>
+<li><p>An exception parameter of an exception handler declared in a
+<code>catch</code> clause of a <code>try</code> statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20">14.20</a>)</p></li>
+<li><p>A local variable, one of the following:</p>
+<ul>
+<li><p>A local variable declared by a local variable declaration
+statement in a block (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.4.2">14.4.2</a>)</p></li>
+<li><p>A local variable declared by a <code>for</code> statement or a
+<code>try</code>-with-resources statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.14">14.14</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20.3">14.20.3</a>)</p></li>
+<li><p>A local variable declared by a pattern (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.30.1">14.30.1</a>)</p></li>
+</ul></li>
+<li><p>A local class or interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.3">14.3</a>),
+one of the following:</p>
+<ul>
+<li><p>A local class declared by a normal class declaration</p></li>
+<li><p>A local class declared by an enum declaration</p></li>
+<li><p>A local class declared by an record declaration</p></li>
+<li><p>A local interface declared by a normal interface
+declaration</p></li>
+</ul></li>
+</ul>
+<div class="editorial">
+<p>The rest of the section is unchanged.</p>
+</div>
+<h3 id="jls-6.3">6.3 Scope of a Declaration</h3>
+<p>The <em>scope</em> of a declaration is the region of the program
+within which the entity declared by the declaration can be referred to
+using a simple name, provided it is not shadowed (<a
+href="#jls-6.4.1">6.4.1</a>).</p>
+<p>A declaration is said to be <em>in scope</em> at a particular point
+in a program if and only if the declaration's scope includes that
+point.</p>
+<p>The scope of the declaration of an observable top level package (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.4.3">7.4.3</a>)
+is all observable compilation units associated with modules to which the
+package is uniquely visible (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.4.3">7.4.3</a>).</p>
+<p>The declaration of a package that is not observable is never in
+scope.</p>
+<p>The declaration of a subpackage is never in scope.</p>
+<p>The package <code>java</code> is always in scope.</p>
+<p>The scope of a class or interface imported by a single-type-import
+declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.1">7.5.1</a>)<strong>,
+</strong> <del>or</del> a type-import-on-demand declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.2">7.5.2</a>)<strong>,
+or a single-module-import declaration (<a
+href="#jls-7.5.5">7.5.5</a>)</strong> is the module declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7">7.7</a>)
+and all the class and interface declarations (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1">8.1</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-9.1">9.1</a>)
+of the compilation unit in which the <code>import</code> declaration
+appears, as well as any annotations on the module declaration or package
+declaration of the compilation unit.</p>
+<p>The scope of a member imported by a single-static-import declaration
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.3">7.5.3</a>)
+or a static-import-on-demand declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.4">7.5.4</a>)
+is the module declaration and all the class and interface declarations
+of the compilation unit in which the <code>import</code> declaration
+appears, as well as any annotations on the module declaration or package
+declaration of the compilation unit.</p>
+<p>The scope of a top level class or interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.6">7.6</a>)
+is all class and interface declarations in the package in which the top
+level class or interface is declared.</p>
+<p>The scope of a declaration of a member <em>m</em> declared in or
+inherited by a class or interface <em>C</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.2">8.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.2">9.2</a>)
+is the entire body of <em>C</em>, including any nested class or
+interface declarations. If <em>C</em> is a record class, then the scope
+of <em>m</em> additionally includes the header of the record declaration
+of <em>C</em>.</p>
+<p>The scope of a formal parameter of a method (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.1">8.4.1</a>),
+constructor (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.1">8.8.1</a>),
+or lambda expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.27">15.27</a>)
+is the entire body of the method, constructor, or lambda expression.</p>
+<p>The scope of a class's type parameter (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1.2">8.1.2</a>)
+is the type parameter section of the class declaration, and the type
+parameter section of any superclass type or superinterface type of the
+class declaration, and the class body. If the class is a record class
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.10">8.10</a>),
+then the scope of the type parameter additionally includes the header of
+the record declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.10.1">8.10.1</a>).</p>
+<p>The scope of an interface's type parameter (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.1.2">9.1.2</a>)
+is the type parameter section of the interface declaration, and the type
+parameter section of any superinterface type of the interface
+declaration, and the interface body.</p>
+<p>The scope of a method's type parameter (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.4">8.4.4</a>)
+is the entire declaration of the method, including the type parameter
+section, but excluding the method modifiers.</p>
+<p>The scope of a constructor's type parameter (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.4">8.8.4</a>)
+is the entire declaration of the constructor, including the type
+parameter section, but excluding the constructor modifiers.</p>
+<p>The scope of a local class or interface declaration immediately
+enclosed by a block (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.2">14.2</a>)
+is the rest of the immediately enclosing block, including the local
+class or interface declaration itself.</p>
+<p>The scope of a local class or interface declaration immediately
+enclosed by a switch block statement group (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.11">14.11</a>)
+is the rest of the immediately enclosing switch block statement group,
+including the local class or interface declaration itself.</p>
+<p>The scope of a local variable declared in a block by a local variable
+declaration statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.4.2">14.4.2</a>)
+is the rest of the block, starting with the declaration's own
+initializer and including any further declarators to the right in the
+local variable declaration statement.</p>
+<p>The scope of a local variable declared in the <em>ForInit</em> part
+of a basic <code>for</code> statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.14.1">14.14.1</a>)
+includes all of the following:</p>
+<ul>
+<li><p>Its own initializer</p></li>
+<li><p>Any further declarators to the right in the <em>ForInit</em> part
+of the <code>for</code> statement</p></li>
+<li><p>The <em>Expression</em> and <em>ForUpdate</em> parts of the
+<code>for</code> statement</p></li>
+<li><p>The contained <em>Statement</em></p></li>
+</ul>
+<p>The scope of a local variable declared in the header of an enhanced
+<code>for</code> statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.14.2">14.14.2</a>)
+is the contained <em>Statement</em>.</p>
+<p>The scope of a local variable declared in the resource specification
+of a <code>try</code>-with-resources statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20.3">14.20.3</a>)
+is from the declaration rightward over the remainder of the resource
+specification and the entire <code>try</code> block associated with the
+<code>try</code>-with-resources statement.</p>
+<blockquote>
+<p>The translation of a <code>try</code>-with-resources statement
+implies the rule above.</p>
+</blockquote>
+<p>The scope of a parameter of an exception handler that is declared in
+a <code>catch</code> clause of a <code>try</code> statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20">14.20</a>)
+is the entire block associated with the <code>catch</code>.</p>
+<div class="editorial">
+<p>The rest of the section is unchanged.</p>
+</div>
+<h3 id="jls-6.4">6.4 Shadowing and Obscuring</h3>
+<h4 id="jls-6.4.1">6.4.1 Shadowing</h4>
+<p>Some declarations may be <em>shadowed</em> in part of their scope by
+another declaration of the same name, in which case a simple name cannot
+be used to refer to the declared entity.</p>
+<p>Shadowing is distinct from hiding (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.3">8.3</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.8.2">8.4.8.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.5">8.5</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.3">9.3</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.5">9.5</a>),
+which applies only to members which would otherwise be inherited but are
+not because of a declaration in a subclass. Shadowing is also distinct
+from obscuring (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-6.html#jls-6.4.2">6.4.2</a>).</p>
+<p>A declaration <em>d</em> of a type named <em>n</em> shadows the
+declarations of any other types named <em>n</em> that are in scope at
+the point where <em>d</em> occurs throughout the scope of
+<em>d</em>.</p>
+<p>A declaration <em>d</em> of a field or formal parameter named
+<em>n</em> shadows, throughout the scope of <em>d</em>, the declarations
+of any other variables named <em>n</em> that are in scope at the point
+where <em>d</em> occurs.</p>
+<p>A declaration <em>d</em> of a local variable or exception parameter
+named <em>n</em> shadows, throughout the scope of <em>d</em>, (a) the
+declarations of any other fields named <em>n</em> that are in scope at
+the point where <em>d</em> occurs, and (b) the declarations of any other
+variables named <em>n</em> that are in scope at the point where
+<em>d</em> occurs but are <em>not</em> declared in the innermost class
+in which <em>d</em> is declared.</p>
+<p>A declaration <em>d</em> of a method named <em>n</em> shadows the
+declarations of any other methods named <em>n</em> that are in an
+enclosing scope at the point where <em>d</em> occurs throughout the
+scope of <em>d</em>.</p>
+<p>A package declaration never shadows any other declaration.</p>
+<p>A type-import-on-demand declaration never causes any other
+declaration to be shadowed.</p>
+<p>A static-import-on-demand declaration never causes any other
+declaration to be shadowed.</p>
+<p><strong>A single-module-import declaration never causes any other
+declaration to be shadowed.</strong></p>
+<p>A single-type-import declaration <em>d</em> in a compilation unit
+<em>c</em> of package <em>p</em> that imports a type named <em>n</em>
+shadows, throughout <em>c</em>, the declarations of:</p>
+<ul>
+<li><p>any top level type named <em>n</em> declared in another
+compilation unit of <em>p</em></p></li>
+<li><p>any type named <em>n</em> imported by a type-import-on-demand
+declaration in <em>c</em></p></li>
+<li><p>any type named <em>n</em> imported by a static-import-on-demand
+declaration in <em>c</em></p></li>
+<li><p><strong>any type named <em>n</em> imported by a
+single-module-import declaration in <em>c</em></strong></p></li>
+</ul>
+<p>A single-static-import declaration <em>d</em> in a compilation unit
+<em>c</em> of package <em>p</em> that imports a field named <em>n</em>
+shadows the declaration of any static field named <em>n</em> imported by
+a static-import-on-demand declaration in <em>c</em>, throughout
+<em>c</em>.</p>
+<p>A single-static-import declaration <em>d</em> in a compilation unit
+<em>c</em> of package <em>p</em> that imports a method named <em>n</em>
+with signature <em>s</em> shadows the declaration of any static method
+named <em>n</em> with signature <em>s</em> imported by a
+static-import-on-demand declaration in <em>c</em>, throughout
+<em>c</em>.</p>
+<p>A single-static-import declaration <em>d</em> in a compilation unit
+<em>c</em> of package <em>p</em> that imports a type named <em>n</em>
+shadows, throughout <em>c</em>, the declarations of:</p>
+<ul>
+<li><p>any static type named <em>n</em> imported by a
+static-import-on-demand declaration in <em>c</em>;</p></li>
+<li><p>any top level type (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.6">7.6</a>)
+named <em>n</em> declared in another compilation unit (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.3">7.3</a>)
+of <em>p</em>;</p></li>
+<li><p>any type named <em>n</em> imported by a type-import-on-demand
+declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.2">7.5.2</a>)
+in <em>c</em>.</p></li>
+<li><p><strong>any type named <em>n</em> imported by a
+single-module-import declaration in <em>c</em>.</strong></p></li>
+</ul>
+<div class="editorial">
+<p>The rest of the section is unchanged.</p>
+</div>
+<h3 id="jls-6.5">6.5 Determining the Meaning of a Name</h3>
+<h4 id="jls-6.5.1">6.5.1 Syntactic Classification of a Name According to
+Context</h4>
+<p>A name is syntactically classified as a <em>ModuleName</em> in these
+contexts:</p>
+<ul>
+<li><p>In a <code>requires</code> directive in a module declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7.1">7.7.1</a>)</p></li>
+<li><p>To the right of <code>to</code> in an <code>exports</code> or
+<code>opens</code> directive in a module declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7.2">7.7.2</a>)</p></li>
+<li><p><strong>To the right of <code>module</code> in a
+single-module-import declaration (<a
+href="#jls-7.5.5">7.5.5</a>)</strong></p></li>
+</ul>
+<p>A name is syntactically classified as a <em>PackageName</em> in these
+contexts:</p>
+<ul>
+<li><p>To the right of <code>exports</code> or <code>opens</code> in a
+module declaration</p></li>
+<li><p>To the left of the "<code>.</code>" in a qualified
+<em>PackageName</em></p></li>
+</ul>
+<p>A name is syntactically classified as a <em>TypeName</em> in these
+contexts:</p>
+<ul>
+<li><p>To name a class or interface:</p>
+<ol type="1">
+<li><p>In a <code>uses</code> or <code>provides</code> directive in a
+module declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.7.1">7.7.1</a>)</p></li>
+<li><p>In a single-type-import declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.1">7.5.1</a>)</p></li>
+<li><p>To the left of the <code>.</code> in a single-static-import
+declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.3">7.5.3</a>)</p></li>
+<li><p>To the left of the <code>.</code> in a static-import-on-demand
+declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.4">7.5.4</a>)</p></li>
+<li><p>In a <code>permits</code> clause of a <code>sealed</code> class
+or interface declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1.6">8.1.6</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.1.4">9.1.4</a>).</p></li>
+<li><p>To the left of the <code>(</code> in a constructor declaration
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8">8.8</a>)</p></li>
+<li><p>After the <code>@</code> sign in an annotation (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.7">9.7</a>)</p></li>
+<li><p>To the left of <code>.class</code> in a class literal (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.8.2">15.8.2</a>)</p></li>
+<li><p>To the left of <code>.this</code> in a qualified
+<code>this</code> expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.8.4">15.8.4</a>)</p></li>
+<li><p>To the left of <code>.super</code> in a qualified superclass
+field access expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.11.2">15.11.2</a>)</p></li>
+<li><p>To the left of <code>.</code><em>Identifier</em> or
+<code>.super.</code><em>Identifier</em> in a qualified method invocation
+expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.12">15.12</a>)</p></li>
+<li><p>To the left of <code>.super::</code> in a method reference
+expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.13">15.13</a>)</p></li>
+</ol></li>
+<li><p>As the <em>Identifier</em> or dotted <em>Identifier</em> sequence
+that constitutes any <em>ReferenceType</em> (including a
+<em>ReferenceType</em> to the left of the brackets in an array type, or
+to the left of the &lt; in a parameterized type, or in a non-wildcard
+type argument of a parameterized type, or in an <code>extends</code> or
+<code>super</code> clause of a wildcard type argument of a parameterized
+type) in the 17 contexts where types are used (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-4.html#jls-4.11">4.11</a>):</p>
+<ol type="1">
+<li><p>In an <code>extends</code> or <code>implements</code> clause of a
+class declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1.4">8.1.4</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1.5">8.1.5</a>)</p></li>
+<li><p>In an <code>extends</code> clause of an interface declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.1.3">9.1.3</a>)</p></li>
+<li><p>The return type of a method (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.5">8.4.5</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.4">9.4</a>),
+including the type of an element of an annotation interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.6.1">9.6.1</a>)</p></li>
+<li><p>In the <code>throws</code> clause of a method or constructor (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.6">8.4.6</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.5">8.8.5</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.4">9.4</a>)</p></li>
+<li><p>In an <code>extends</code> clause of a type parameter declaration
+of a generic class, interface, method, or constructor (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.1.2">8.1.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.1.2">9.1.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.4">8.4.4</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.4">8.8.4</a>)</p></li>
+<li><p>The type in a field declaration of a class or interface (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.3">8.3</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.3">9.3</a>)</p></li>
+<li><p>The type in a formal parameter declaration of a method,
+constructor, or lambda expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4.1">8.4.1</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.1">8.8.1</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.4">9.4</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.27.1">15.27.1</a>)</p></li>
+<li><p>The type of the receiver parameter of a method (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.4">8.4</a>)</p></li>
+<li><p>The type in a local variable declaration in either a statement
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.4.2">14.4.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.14.1">14.14.1</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.14.2">14.14.2</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20.3">14.20.3</a>)
+or a pattern (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.30.1">14.30.1</a>)</p></li>
+<li><p>A type in an exception parameter declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20">14.20</a>)</p></li>
+<li><p>The type in a record component declaration of a record class (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.10.1">8.10.1</a>)</p></li>
+<li><p>In an explicit type argument list to an explicit constructor
+invocation statement or class instance creation expression or method
+invocation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.7.1">8.8.7.1</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.9">15.9</a>,
+<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.12">15.12</a>)</p></li>
+<li><p>In an unqualified class instance creation expression, either as
+the class type to be instantiated (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.9">15.9</a>)
+or as the direct superclass or direct superinterface of an anonymous
+class to be instantiated (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.9.5">15.9.5</a>)</p></li>
+<li><p>The element type in an array creation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.10.1">15.10.1</a>)</p></li>
+<li><p>The type in the cast operator of a cast expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.16">15.16</a>)</p></li>
+<li><p>The type that follows the <code>instanceof</code> relational
+operator (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.20.2">15.20.2</a>)</p></li>
+<li><p>In a method reference expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.13">15.13</a>),
+as the reference type to search for a member method or as the class type
+or array type to construct.</p></li>
+</ol></li>
+</ul>
+<blockquote>
+<p>The extraction of a <em>TypeName</em> from the identifiers of a
+<em>ReferenceType</em> in the 17 contexts above is intended to apply
+recursively to all sub-terms of the <em>ReferenceType</em>, such as its
+element type and any type arguments.</p>
+<p>For example, suppose a field declaration uses the type
+<code>p.q.Foo[]</code>. The brackets of the array type are ignored, and
+the term <code>p.q.Foo</code> is extracted as a dotted sequence of
+<em>Identifiers</em> to the left of the brackets in an array type, and
+classified as a <em>TypeName</em>. A later step determines which of
+<code>p</code>, <code>q</code>, and <code>Foo</code> is a type name or a
+package name.</p>
+<p>As another example, suppose a cast operator uses the type
+<code>p.q.Foo&lt;? extends String&gt;</code>. The term
+<code>p.q.Foo</code> is again extracted as a dotted sequence of
+<em>Identifier</em> terms, this time to the left of the
+<code>&lt;</code> in a parameterized type, and classified as a
+<em>TypeName</em>. The term <code>String</code> is extracted as an
+<em>Identifier</em> in an <code>extends</code> clause of a wildcard type
+argument of a parameterized type, and classified as a
+<em>TypeName</em>.</p>
+</blockquote>
+<p>A name is syntactically classified as an <em>ExpressionName</em> in
+these contexts:</p>
+<ul>
+<li><p>As the qualifying expression in a qualified superclass
+constructor invocation (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.8.7.1">8.8.7.1</a>)</p></li>
+<li><p>As the qualifying expression in a qualified class instance
+creation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.9">15.9</a>)</p></li>
+<li><p>As the array reference expression in an array access expression
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.10.3">15.10.3</a>)</p></li>
+<li><p>As a <em>PostfixExpression</em> (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.14">15.14</a>)</p></li>
+<li><p>As the left-hand operand of an assignment operator (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.26">15.26</a>)</p></li>
+<li><p>As a <em>VariableAccess</em> in a <code>try</code>-with-resources
+statement (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-14.html#jls-14.20.3">14.20.3</a>)</p></li>
+</ul>
+<p>A name is syntactically classified as a <em>MethodName</em> in this
+context:</p>
+<ul>
+<li>Before the "<code>(</code>" in a method invocation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.12">15.12</a>)</li>
+</ul>
+<p>A name is syntactically classified as a <em>PackageOrTypeName</em> in
+these contexts:</p>
+<ul>
+<li><p>To the left of the "<code>.</code>" in a qualified
+<em>TypeName</em></p></li>
+<li><p>In a type-import-on-demand declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.2">7.5.2</a>)</p></li>
+</ul>
+<p>A name is syntactically classified as an <em>AmbiguousName</em> in
+these contexts:</p>
+<ul>
+<li><p>To the left of the "<code>.</code>" in a qualified
+<em>ExpressionName</em></p></li>
+<li><p>To the left of the rightmost <code>.</code> that occurs before
+the "<code>(</code>" in a method invocation expression</p></li>
+<li><p>To the left of the "<code>.</code>" in a qualified
+<em>AmbiguousName</em></p></li>
+<li><p>In the default value clause of an annotation element declaration
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.6.2">9.6.2</a>)</p></li>
+<li><p>To the right of an "<code>=</code>" in an element-value pair (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-9.html#jls-9.7.1">9.7.1</a>)</p></li>
+<li><p>To the left of <code>::</code> in a method reference expression
+(<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.13">15.13</a>)</p></li>
+</ul>
+<blockquote>
+<p>The effect of syntactic classification is to restrict certain kinds
+of entities to certain parts of expressions:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>The name of a field, parameter, or local variable may be used as
+an expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.14.1">15.14.1</a>).</p></li>
+<li><p>The name of a method may appear in an expression only as part of
+a method invocation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.12">15.12</a>).</p></li>
+<li><p>The name of a class or interface may appear in an expression only
+as part of a class literal (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.8.2">15.8.2</a>),
+a qualified <code>this</code> expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.8.4">15.8.4</a>),
+a class instance creation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.9">15.9</a>),
+an array creation expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.10.1">15.10.1</a>),
+a cast expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.16">15.16</a>),
+an <code>instanceof</code> expression (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-15.html#jls-15.20.2">15.20.2</a>),
+an enum constant (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-8.html#jls-8.9">8.9</a>),
+or as part of a qualified name for a field or method.</p></li>
+<li><p>The name of a package may appear in an expression only as part of
+a qualified name for a class or interface.</p></li>
+</ul>
+</blockquote>
+<h2 id="jls-7">Chapter 7: Packages and Modules</h2>
+<h3 id="jls-7.5">7.5 Import Declarations</h3>
+<p>An <em>import declaration</em> allows a named class, interface, or
+<code>static</code> member to be referred to by a simple name (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-6.html#jls-6.2">6.2</a>)
+that consists of a single identifier.</p>
+<p>Without the use of an appropriate import declaration, a reference to
+a class or interface declared in another package, or a reference to a
+<code>static</code> member of another class or interface, would
+typically need to use a fully qualified name (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-6.html#jls-6.7">6.7</a>).</p>
+<dl>
+<dt><em>ImportDeclaration:</em></dt>
+<dd>
+<em>SingleTypeImportDeclaration</em>
+</dd>
+<dd>
+<em>TypeImportOnDemandDeclaration</em>
+</dd>
+<dd>
+<em>SingleStaticImportDeclaration</em>
+</dd>
+<dd>
+<em>StaticImportOnDemandDeclaration</em>
+</dd>
+<dd>
+<strong><em>SingleModuleImportDeclaration</em></strong>
+</dd>
+</dl>
+<ul>
+<li><p>A single-type-import declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.1">7.5.1</a>)
+imports a single named class or interface, by mentioning its canonical
+name (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-6.html#jls-6.7">6.7</a>).</p></li>
+<li><p>A type-import-on-demand declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.2">7.5.2</a>)
+imports all the accessible classes and interfaces of a named package,
+class, or interface as needed, by mentioning the canonical name of the
+package, class, or interface.</p></li>
+<li><p>A single-static-import declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.3">7.5.3</a>)
+imports all accessible <code>static</code> members with a given name
+from a class or interface, by giving its canonical name.</p></li>
+<li><p>A static-import-on-demand declaration (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.5.4">7.5.4</a>)
+imports all accessible <code>static</code> members of a named class or
+interface as needed, by mentioning the canonical name of the class or
+interface.</p></li>
+<li><p><strong>A single-module-import declaration (<a
+href="#jls-7.5.5">7.5.5</a>) imports all the accessible classes and
+interfaces of the packages exported by a given module, as
+needed.</strong></p></li>
+</ul>
+<p>The scope and shadowing of a class, interface, or member imported by
+these declarations is specified in <a href="#jls-6.3">6.3</a> and <a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-6.html#jls-6.4">6.4</a>.</p>
+<blockquote>
+<p>An <code>import</code> declaration makes classes, interfaces, or
+members available by their simple names only within the compilation unit
+that actually contains the <code>import</code> declaration. The scope of
+the class(es), interface(s), or member(s) introduced by an
+<code>import</code> declaration specifically does not include other
+compilation units in the same package, other <code>import</code>
+declarations in the current compilation unit, or a <code>package</code>
+declaration in the current compilation unit (except for the annotations
+of a <code>package</code> declaration).</p>
+</blockquote>
+<h4 id="jls-7.5.5"><strong>7.5.5 Single-Module-Import
+Declarations</strong></h4>
+<div class="inserted">
+<p>A <em>single-module-import declaration</em> allows all
+<code>public</code> top level classes and interfaces of the packages
+exported by a named module to be imported as needed.</p>
+<dl>
+<dt><em>SingleModuleImportDeclaration:</em></dt>
+<dd>
+<code>import</code> <code>module</code> <em>ModuleName</em>
+<code>;</code>
+</dd>
+</dl>
+<p>A single-module-import declaration <code>import module M;</code>
+imports, on demand, all the <code>public</code> top level classes and
+interfaces in the following packages:</p>
+<ol type="1">
+<li><p>The packages exported by the module <code>M</code> to the current
+module.</p></li>
+<li><p>The packages exported by the modules that are read by the current
+module due to reading the module <code>M</code>. This allows a program
+to use the API of a module, which might refer to classes and interfaces
+from other modules, without having to import all those other
+modules.</p></li>
+</ol>
+<p>It is a compile-time error if the module <em>ModuleName</em> is not
+read by the current module (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.3">7.3</a>).</p>
+<blockquote>
+<p>The modules read by the current module are given by the result of
+resolution, as described in the <code>java.lang.module</code> package
+specification (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.3">7.3</a>).</p>
+</blockquote>
+<p>Two or more single-module-import declarations in the same compilation
+unit may name the same module. All but one of these declarations are
+considered redundant; the effect is as if that module was imported only
+once.</p>
+<blockquote>
+<p>A single-module-import declaration can be used in any source file. It
+is not required for the source file to be part of a module. For example,
+modules <code>java.base</code> and <code>java.sql</code> are part of the
+standard Java runtime, so they can be imported by programs which are not
+themselves developed as modules.</p>
+<p>It is sometimes useful to import a module that does not export any
+packages. This is because the module may transitively require other
+modules that do export packages. For example, the <code>java.se</code>
+module does not export any packages, but it requires a number of modules
+transitively, so the effect of the single-module-import declaration
+<code>import module java.se;</code> is to import the packages which are
+exported by those modules (and so on, recursively).</p>
+</blockquote>
+<div class="example">
+<p>Example 7.5.5-1. Single-Module-Import in Ordinary Compilation
+Units</p>
+<p>Modules allow a set of packages to be grouped together for reuse
+under a single name, and the exported packages of a module are intended
+to form a cohesive and coherent API. Single-module-import declarations
+allow the developer to import all the packages exported by a module in
+one go, simplifying the reuse of modular libraries. For example:</p>
+<pre><code>import module java.xml;</code></pre>
+<p>causes the simple names of the <code>public</code> top level classes
+and interfaces declared in all packages exported by module
+<code>java.xml</code> to be available within the class and interface
+declarations of the compilation unit. Thus, the simple name
+<code>XPath</code> refers to the interface <code>XPath</code> of the
+package <code>javax.xml.xpath</code> exported by the module
+<code>java.xml</code> in all places in the compilation unit where that
+class declaration is not shadowed or obscured.</p>
+<p>Assume the following compilation unit associated with module
+<code>M0</code>:</p>
+<pre><code>package q;
+import module M1;   // What does this import?
+class C { ... }</code></pre>
+<p>where module <code>M0</code> has the following declaration:</p>
+<pre><code>module M0 { requires M1; }</code></pre>
+<p>The meaning of the single-module-import declaration
+<code>import module M1;</code> depends on the exports of <code>M1</code>
+and any modules that <code>M1</code> requires transitively. Consider as
+an example:</p>
+<pre><code>module M1 {
+    exports p1;
+    exports p2 to M0;
+    exports p3 to M3;
+    requires transitive M4;
+    requires M5;
+}
+
+module M3 { ... }
+
+module M4 { exports p10; }
+
+module M5 { exports p11; }</code></pre>
+<p>The effect of the single-module-import declaration
+<code>import module M1;</code> is then:</p>
+<ol type="1">
+<li><p>Import the <code>public</code> top level classes and interfaces
+from package <code>p1</code>, since <code>M1</code> exports
+<code>p1</code> to everyone;</p></li>
+<li><p>Import the <code>public</code> top level classes and interfaces
+from package <code>p2</code>, since <code>M1</code> exports
+<code>p2</code> to <code>M0</code>, the module with which the
+compilation unit is associated; and</p></li>
+<li><p>Import the <code>public</code> top level classes and interfaces
+from package <code>p10</code>, since <code>M1</code> requires
+<em>transitively</em> <code>M4</code>, which exports
+<code>p10</code>.</p></li>
+</ol>
+<p>Nothing from packages <code>p3</code> or <code>p11</code> is imported
+by the compilation unit.</p>
+<p>Single-module-import declarations may appear in a source file
+containing only a package declaration. Such files are typically called
+<code>package-info.java</code> and are used as the sole repository for
+package-level annotations and documentation (<a
+href="https://docs.oracle.com/javase/specs/jls/se22/html/jls-7.html#jls-7.4.1">7.4.1</a>).</p>
+</div>
+<div class="example">
+<p>Example 7.5.5-2. Single-Module-Import in Modular Compilation
+Units</p>
+<p>Import declarations can also appear in a modular compilation unit.
+The following modular compilation unit uses a single-module-import
+declaration, allowing the simple name of the interface
+<code>Driver</code> associated with module <code>java.sql</code> to be
+used in the <code>provides</code> directive:</p>
+<pre><code>import module java.sql;
+module com.myDB.core {
+    exports ...
+    requires transitive java.sql;
+    provides Driver with com.myDB.greatDriver;
+}</code></pre>
+<p>It is possible for a modular compilation unit that declares a module
+<code>M</code> to also import the module <code>M</code>. In the
+following example, this means that the simple name of a class
+<code>C</code> can be used in a <code>uses</code> directive:</p>
+<pre><code>import module M;
+module M {
+    ...
+    exports p;
+    ...
+    uses C;
+    ...
+}</code></pre>
+<p>where the package <code>p</code> exported by module <code>M</code> is
+declared as follows:</p>
+<pre><code>package p;
+class C { ... }</code></pre>
+<p>Without the single-module-import declaration, the qualified name of
+the class <code>C</code> would need to be used in the <code>uses</code>
+directive.</p>
+<p>Suppose a module declaration as follows:</p>
+<pre><code>module M2 {
+    requires java.se;
+    exports p2;
+    ...
+}</code></pre>
+<p>where the package <code>p2</code> exported by <code>M2</code> is
+declared as follows:</p>
+<pre><code>package p2;
+import module java.xml;
+class MyClass {
+    ...
+}</code></pre>
+<p>Even though the module <code>M2</code> does not directly express a
+dependency on the module <code>java.xml</code>, the import of module
+<code>java.xml</code> is still correct as the resolution process will
+determine that the module <code>java.xml</code> is read by module
+<code>M2</code>.</p>
+</div>
+<div class="example">
+<p>Example 7.5.5-3. Ambiguous Imports</p>
+<p>Clearly importing multiple modules could lead to name ambiguities,
+for example:</p>
+<pre><code>import module java.base;
+import module java.desktop;
+
+...
+List l = ...        // Error - Ambiguous name!
+...</code></pre>
+<p>The module <code>java.base</code> exports the package
+<code>java.util</code>, which has a <code>public</code>
+<code>List</code> interface. The module <code>java.desktop</code>
+exports the package <code>java.awt</code>, which a <code>public</code>
+<code>List</code> class. Having imported both modules, the use of the
+simple name <code>List</code> is clearly ambiguous and results in a
+compile-time error.</p>
+<p>However, just importing a single module can also lead to a name
+ambiguity, for example:</p>
+<pre><code>import module java.desktop;
+
+...
+Element e = ...     // Error - Ambiguous name!
+...</code></pre>
+<p>The module <code>java.desktop</code> exports packages,
+<code>javax.swing.text</code> and
+<code>javax.swing.text.html.parser</code>, which have a
+<code>public</code> <code>Element</code> interface and a
+<code>public</code> <code>Element</code> class, respectively. Thus the
+use of the simple name <code>Element</code> is ambiguous and results in
+a compile-time error.</p>
+<p>A single-type-import declaration can be used to resolve a name
+ambiguity. The earlier example where the simple name <code>List</code>
+is ambiguous can be resolved as follows:</p>
+<pre><code>import module java.base;
+import module java.desktop;
+
+import java.util.List;  // Resolving the ambiguity of the simple name List
+
+...
+List l = ...            // Ok - List is resolved to java.util.List
+...</code></pre>
+</div>
+</div>
+</main><footer class="legal-footer"><hr/><a href="../legal/copyright.html">Copyright</a> &copy; 1993, 2024, Oracle and/or its affiliates, 500 Oracle Parkway, Redwood Shores, CA 94065 USA.<br>All rights reserved. Use is subject to <a href="https://www.oracle.com/java/javase/terms/license/java23speclicense.html">license terms</a> and the <a href="https://www.oracle.com/technetwork/java/redist-137594.html">documentation redistribution policy</a>. <!-- Version 23.0.1+11-39 --></footer>
+</body>
+</html>
