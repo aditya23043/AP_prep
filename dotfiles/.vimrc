@@ -87,7 +87,8 @@ set splitbelow
 set list
 " set listchars=tab:»\ ,trail:·,nbsp:␣,lead:·
 " set listchars=tab:│\ ,trail:·,nbsp:␣
-set listchars=tab:⇥\ ,trail:·,nbsp:␣,eol:⏎
+" set listchars=tab:⇥\ ,trail:·,nbsp:␣,eol:⏎
+set listchars=tab:⇥\ ,trail:·,nbsp:␣
 
 set fillchars=vert:│,fold:─,foldopen:·
 
@@ -169,12 +170,16 @@ Plug 'lilydjwg/colorizer'
 Plug 'sirtaj/vim-openscad'
 
 Plug 'morhetz/gruvbox'
-Plug 'ericbn/vim-solarized'
-Plug 'romgrk/doom-one.vim'
+Plug 'romainl/flattened'
+Plug 'sainnhe/everforest'
+Plug 'bluz71/vim-moonfly-colors'
+Plug 'bluz71/vim-nightfly-colors'
+" Plug 'ericbn/vim-solarized'
+" Plug 'romgrk/doom-one.vim'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'lifepillar/vim-solarized8'
-Plug 'jan-warchol/selenized'
 Plug 'sainnhe/gruvbox-material'
-Plug 'joshdick/onedark.vim'
+" Plug 'joshdick/onedark.vim'
 " Plug 'rose-pine/vim', {'as': 'rosepine'}
 Plug 'cocopon/iceberg.vim'
 Plug 'nordtheme/vim', {'as': 'nord'}
@@ -187,6 +192,7 @@ Plug 'nanotech/jellybeans.vim'
 " Plug 'Everblush/everblush.vim'
 " Plug 'tomasiser/vim-code-dark'
 Plug 'vv9k/vim-github-dark'
+Plug 'overcache/NeoSolarized'
 " Solarized
 " Plug 'ericbn/vim-solarized'
 
@@ -213,9 +219,6 @@ Plug 'cacharle/vim-syntax-extra'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
 
-" Rainbow parenthesis
-Plug 'junegunn/rainbow_parentheses.vim'
-
 call plug#end()
 
 
@@ -225,7 +228,7 @@ let g:tokyonight_style = 'night'  " available: night, storm
 let g:tokyonight_enable_italic = 0
 let g:gruvbox_italic=1
 
-colorscheme gruvbox-material
+colorscheme moonfly
 
 if g:colors_name == "gruvbox"
   hi Comment guifg=#585858
@@ -237,6 +240,17 @@ if g:colors_name == "gruvbox"
   hi StatusLine guifg=#3c3836 guibg=#ddc7a1
   let g:limelight_conceal_guifg = '#484848'
 elseif g:colors_name == "retrobox"
+elseif g:colors_name == "moonfly"
+  hi CocInlayHint guifg=#454545
+  hi Comment guifg=#282828
+  hi CocErrorVirtualText guifg=#ff5454
+  hi WildMenu guibg=#e06c75 guifg=#000000
+  hi StatusLine guibg=#181818 guifg=#868686
+  hi NonText guifg=#282828
+  hi SpecialKey guifg=#282828
+  hi LineNr guifg=#181818
+  hi CursorLineNr guifg=#c6c6c6
+  hi CursorLine guibg=#1c1c1c
 elseif g:colors_name == "onedark"
   hi Comment guifg=#2c303a
   hi LineNr guifg=#2c303a
@@ -258,9 +272,10 @@ elseif g:colors_name == "iceberg"
   hi StatusLine guifg=#0f1117 guibg=#9a9ca5
   hi StatusLineNC guibg=#303136
 elseif g:colors_name == "ghdark"
-  hi Ignore guifg=#343434
-  hi NonText guifg=#343434
+  hi Ignore guifg=#232323
+  hi NonText guifg=#232323
   hi WildMenu guibg=#e06c75
+  hi CocMenuSel guifg=#000000 guibg=#ecf2f8
   hi Normal guibg=#000000
   hi CursorLineNr guibg=#161b22
   hi Comment guifg=#242424
@@ -504,6 +519,9 @@ nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+
+let g:everforest_background = 'soft'
+packadd! everforest 
 " Resume latest coc list
 " nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " The line beneath this is called `modeline`. See `:help modeline`
